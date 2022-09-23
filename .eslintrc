@@ -1,0 +1,34 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-typescript/base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
+  "plugins": ["filenames"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "project": "./tsconfig.json",
+    "createDefaultProgram": true
+  },
+  "rules": {
+    "import/no-default-export": "error",
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "class-methods-use-this": "warn",
+    "filenames/match-regex": [2, "^[0-9a-z-.]+$", true],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "no-param-reassign": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "quotes": [2, "single", { "avoidEscape": true }]
+  },
+  "env": {
+    "jest/globals": true
+  }
+}
