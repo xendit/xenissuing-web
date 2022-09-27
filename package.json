@@ -9,9 +9,8 @@
     "build": "tsc",
     "start:dev": "tsc-watch --onSuccess \"node ./dist/src/index.js\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xendit/xenissuing-web.git"
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@xendit"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
