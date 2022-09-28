@@ -13,7 +13,7 @@ XenCrypt is a module to help you set up encryption between XenIssuing and your a
 
 ### Requirements
 
-To be able to use XenCrypt, you will need to use a private key provided by Xendit.
+To be able to use Xenissuing, you will need to use a private key provided by Xendit.
 
 It includes several methods:
 - `generateSessionId` will encrypt a session key randomly generated used for symmetric encryption with Xenissuing.
