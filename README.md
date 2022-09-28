@@ -25,10 +25,10 @@ It includes several methods:
 import forge from 'node-forge';
 import XenIssuing from '@xendit/xenissuing-web';
 
-const xenl = new XenIssuing();
-const sessionKey = xenl.generateSessionKey();
-const iv = xenl.generateIV();
-const sessionId = xenl.generateSessionId('PRIVATE_KEY_PROVIDED_BY_XENDIT', sessionKey, iv);
-const encryptedPlain = xenl.encrypt('plainText', sessionKey, iv);
-const decryptedPlain = forge.util.decode64(xenl.decrypt(forge.util.encode64(iv), encryptedPlain, sessionKey));
+const xen = new XenIssuing();
+const sessionKey = xen.generateSessionKey();
+const iv = xen.generateIV();
+const sessionId = xen.generateSessionId('PRIVATE_KEY_PROVIDED_BY_XENDIT', sessionKey, iv);
+const encryptedPlain = xen.encrypt('plainText', sessionKey, iv);
+const decryptedPlain = forge.util.decode64(xen.decrypt(forge.util.encode64(iv), encryptedPlain, sessionKey));
 ```
