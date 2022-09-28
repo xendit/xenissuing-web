@@ -1,6 +1,6 @@
 
-[NodeJs Support](https://img.shields.io/badge/nodejs-%3E=8.17.0-green)
-[NPM Support](https://img.shields.io/badge/npm-%3E=6.14.15-green)
+![NodeJs Support](https://img.shields.io/badge/nodejs-%3E=8.17.0-green)
+![NPM Support](https://img.shields.io/badge/npm-%3E=6.14.15-green)
 
 # Xenissuing
 
