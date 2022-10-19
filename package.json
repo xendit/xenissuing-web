@@ -9,9 +9,6 @@
     "build": "tsc",
     "start:dev": "tsc-watch --onSuccess \"node ./dist/src/index.js\""
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@xendit"
-  },
   "devDependencies": {
     "@types/jest": "^28.1.6",
     "@types/mocha": "^9.1.1",
