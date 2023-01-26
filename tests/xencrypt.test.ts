@@ -3,10 +3,14 @@ import forge from 'node-forge';
 import { XenIssuing } from '../src';
 import { DecryptionError, EncryptionError } from '../src/lib/errors';
 
-const mockedMasterKey = '770A8A65DA156D24EE2A093277530142';
-const xenCrypt = new XenIssuing();
-
 describe('XenCrypt', () => {
+  let xenCrypt;
+  beforeAll(() => {
+    const keys = forge.pki.rsa.generateKeyPair(2048);
+    xenCrypt = new XenIssuing(
+      forge.pki.publicKeyToPem(keys.publicKey),
+    );
+  });
   it("'generateSessionKey' should generate Session Key in base64 format", () => {
     // Arrange
     const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -22,12 +26,9 @@ describe('XenCrypt', () => {
     // Arrange
     const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
     const sessionKey = xenCrypt.generateSessionKey();
-    const iv = xenCrypt.generateIV();
 
     // Act
-    const sessionId = xenCrypt.generateSessionId(mockedMasterKey,
-      sessionKey,
-      iv);
+    const sessionId = xenCrypt.generateSessionId(sessionKey);
 
     // Assert
     expect(base64regex.test(sessionId)).toBe(true);
@@ -129,19 +130,5 @@ describe('XenCrypt', () => {
     expect(decryptedPlain).not.toEqual(
       forge.util.encode64(forge.util.createBuffer(plain, 'utf8').getBytes()),
     );
-  });
-
-  it('should extract iv from sessionId', () => {
-    // Arrange
-    const sessionKey = xenCrypt.generateSessionKey();
-    const iv = xenCrypt.generateIV();
-
-    // Act
-    const sessionId = xenCrypt.generateSessionId(mockedMasterKey, sessionKey, iv);
-
-    const extractedIv = Buffer.from(sessionId, 'base64').subarray(0, 16).toString('binary');
-
-    // Assert
-    expect(extractedIv).toEqual(iv);
   });
 });

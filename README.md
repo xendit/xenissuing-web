@@ -25,10 +25,13 @@ It includes several methods:
 import forge from 'node-forge';
 import XenIssuing from '@xendit/xenissuing-web';
 
-const xen = new XenIssuing();
+const keys = forge.pki.rsa.generateKeyPair(2048); // Use Xendit's Public Key instead
+const xen = new XenIssuing(
+    forge.pki.publicKeyToPem(keys.publicKey),
+);
 const sessionKey = xen.generateSessionKey();
 const iv = xen.generateIV();
-const sessionId = xen.generateSessionId('PRIVATE_KEY_PROVIDED_BY_XENDIT', sessionKey, iv);
+const sessionId = xen.generateSessionId(sessionKey);
 const encryptedPlain = xen.encrypt('plainText', sessionKey, iv);
 const decryptedPlain = forge.util.decode64(xen.decrypt(forge.util.encode64(iv), encryptedPlain, sessionKey));
 ```
