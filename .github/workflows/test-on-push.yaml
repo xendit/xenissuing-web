@@ -2,11 +2,9 @@ name: Test on push
 
 on:
   push:
+  pull_request:
     branches:
       - master
-      - CISU-488
-  pull_request:
-    branches: [main]
 
 jobs:
   jest:
