@@ -3,7 +3,17 @@ import {
   DecryptionError, EncryptionError, GenerateSessionIdError,
 } from './errors';
 
+/**
+ * This class is responsible for encrypting messages using a public key.
+ * @param {Buffer} publicKey - the public key to use for encryption
+ */
 export class Xencrypt {
+  private publicKey: string;
+
+  constructor(publicKey: string) {
+    this.publicKey = publicKey;
+  }
+
   /**
    * Returns a randomised 24 Bytes session key encoded in base64 format.
    */
@@ -21,21 +31,21 @@ export class Xencrypt {
   }
 
   /**
-   * Returns generated Session ID using the key provided by Xendit.
-   * @param {string} key base64 encoded key provided by Xendit.
+   * Returns generated Session ID using the public key provided by Xendit.
    * @param {string} sessionKeyB64 base64 encoded session key.
-   * @param {string} iv initialization vector in bytes.
    * @return {string} base64 encoded Session ID.
    */
-  public generateSessionId(key: string, sessionKeyB64: string, iv: string) {
+  public generateSessionId(sessionKeyB64: string) {
     try {
-      const cipher = forge.cipher.createCipher('AES-CBC', forge.util.decode64(key));
-      const ivB64 = forge.util.encode64(iv);
-      cipher.start({ iv });
-      cipher.update(forge.util.createBuffer(forge.util.decode64(sessionKeyB64)));
-      cipher.finish();
-      const encrypted = cipher.output.data;
-      return Buffer.concat([Buffer.from(ivB64, 'base64'), Buffer.from(forge.util.encode64(encrypted), 'base64')]).toString('base64');
+      const publicKey = forge.pki.publicKeyFromPem(this.publicKey);
+      const buffer = forge.util.createBuffer(sessionKeyB64);
+      const binaryString = buffer.getBytes();
+
+      const encrypted = publicKey.encrypt(binaryString, 'RSA-OAEP', {
+        md: forge.md.sha256.create(),
+      });
+
+      return forge.util.encode64(encrypted);
     } catch (err) {
       throw new GenerateSessionIdError(err.message);
     }
