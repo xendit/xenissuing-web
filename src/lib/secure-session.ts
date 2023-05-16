@@ -1,44 +1,53 @@
+/* eslint-disable class-methods-use-this */
 import forge from 'node-forge';
 import {
-  DecryptionError, EncryptionError, GenerateSessionIdError,
+  DecryptionError,
+  EncryptionError,
+  GenerateSessionIdError,
 } from './errors';
 
 /**
  * This class is responsible for encrypting messages using a public key.
  * @param {Buffer} publicKey - the public key to use for encryption
  */
-export class Xencrypt {
+export class SecureSession {
   private publicKey: string;
 
-  constructor(publicKey: string) {
+  private sessionKeyB64: string = SecureSession.generateSessionKey();
+
+  constructor(publicKey: string, sessionKeyB64?: string) {
     this.publicKey = publicKey;
+    this.sessionKeyB64 = sessionKeyB64 || this.sessionKeyB64;
+  }
+
+  public getSessionKeyB64() {
+    return this.sessionKeyB64;
   }
 
   /**
-   * Returns a randomised 24 Bytes session key encoded in base64 format.
-   */
-  public generateSessionKey(): string {
+     * Returns a randomised 24 Bytes session key encoded in base64 format.
+     */
+  public static generateSessionKey(): string {
     return forge.util.encode64(forge.random.getBytesSync(24));
   }
 
   /**
-   * Function used to generate a random 16 bytes initialization vector.
-   *
-   * @returns {string} random initialization vector in bytes.
-   */
+     * Function used to generate a random 16 bytes initialization vector.
+     *
+     * @returns {string} random initialization vector in bytes.
+     */
   public generateIV(): string {
     return forge.random.getBytesSync(16);
   }
 
   /**
-   * Returns generated Session ID using the public key provided by Xendit.
-   * @param {string} sessionKeyB64 base64 encoded session key.
-   * @return {string} base64 encoded Session ID.
-   */
-  public generateSessionId(sessionKeyB64: string) {
+     * Returns encrypted Session key using the public key provided by Xendit.
+     * @return {string} base64 encoded encrypted Session key.
+     */
+  public encryptKey() {
     try {
       const publicKey = forge.pki.publicKeyFromPem(this.publicKey);
-      const buffer = forge.util.createBuffer(sessionKeyB64);
+      const buffer = forge.util.createBuffer(this.sessionKeyB64);
       const binaryString = buffer.getBytes();
 
       const encrypted = publicKey.encrypt(binaryString, 'RSA-OAEP', {
@@ -52,17 +61,24 @@ export class Xencrypt {
   }
 
   /**
-   * Returns encrypted secret in base64.
-   * @param {string} plain secret to encrypt.
-   * @param {string} sessionKeyB64 base64 encoded session key used for encryption.
-   * @param {string} iv initialization vector in bytes.
-   * @return {string} base64 encoded decrypted secret.
-   */
-  public encrypt(plain: string, sessionKeyB64: string, iv: string): string {
+     * Returns encrypted Session key using the public key provided by Xendit.
+     * @return {string} encoded URI of base64 encoded Session ID.
+     */
+  public getKey() {
+    return encodeURIComponent(this.encryptKey());
+  }
+
+  /**
+     * Returns encrypted secret in base64.
+     * @param {string} plain secret to encrypt.
+     * @param {string} iv initialization vector in bytes.
+     * @return {string} base64 encoded decrypted secret.
+     */
+  public encrypt(plain: string, iv: string): string {
     try {
       const cipher = forge.cipher.createCipher(
         'AES-GCM',
-        Buffer.from(sessionKeyB64, 'base64').toString('binary'),
+        Buffer.from(this.sessionKeyB64, 'base64').toString('binary'),
       );
       cipher.start({ iv });
       cipher.update(forge.util.createBuffer(plain));
@@ -76,17 +92,19 @@ export class Xencrypt {
   }
 
   /**
-   * Returns decrypted secret in base64.
-   * @param {string} ivB64 base64 encoded initialization vector used during encryption.
-   * @param {string} secret base64 encoded secret.
-   * @param {string} sessionKeyB64 base64 encoded session key used for encryption.
-   * @return {string} base64 encoded decrypted secret.
-   */
-  public decrypt(ivB64: string, secret: string, sessionKeyB64: string): string {
+     * Returns decrypted secret in base64.
+     * @param {string} iv base64 encoded initialization vector used during encryption.
+     * @param {string} secret base64 encoded secret.
+     * @return {string} base64 encoded decrypted secret.
+     */
+  public decryptCardData(
+    iv: string,
+    secret: string,
+  ): string {
     try {
-      const sessionKey = forge.util.decode64(sessionKeyB64);
+      const sessionKey = forge.util.decode64(this.sessionKeyB64);
       const ivBytes = forge.util
-        .createBuffer(forge.util.decode64(ivB64))
+        .createBuffer(forge.util.decode64(iv))
         .getBytes();
 
       const encryptedWithTag = forge.util.decode64(secret);
@@ -114,7 +132,7 @@ export class Xencrypt {
           ? decryptedBytes.length - 16
           : decryptedBytes.length,
       );
-      return forge.util.encode64(decrypted);
+      return decrypted;
     } catch (err) {
       throw new DecryptionError(err.message);
     }
