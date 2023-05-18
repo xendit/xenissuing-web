@@ -1,3 +1,7 @@
-import { Xencrypt } from './lib/xencrypt';
+import { SecureSession } from './lib/secure-session';
 
-export class XenIssuing extends Xencrypt {}
+export class XenIssuing {
+  public static createSecureSession(publicKey: string, sessionKey?: string): SecureSession {
+    return new SecureSession(publicKey, sessionKey);
+  }
+}

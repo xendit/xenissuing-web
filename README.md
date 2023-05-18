@@ -1,37 +1,36 @@
-
 ![NodeJs Support](https://img.shields.io/badge/nodejs-%3E=8.17.0-green)
 ![NPM Support](https://img.shields.io/badge/npm-%3E=6.14.15-green)
 
 # Xenissuing
 
 This SDK comprises of the following modules :
-- XenCrypt: this module handles encryption between XenIssuing and your Web application.
 
-## XenCrypt
+- XenIssuing: this module handles encryption between XenIssuing and your Web application.
 
-XenCrypt is a module to help you set up encryption between XenIssuing and your application.
+## SecureSession
+
+SecureSession is a module to help you set up encryption between XenIssuing and your application.
 
 ### Requirements
 
 To be able to use Xenissuing, you will need to use a private key provided by Xendit.
 
 It includes several methods:
-- `generateSessionId` will encrypt a session key randomly generated used for symmetric encryption with Xenissuing.
+
+- `getKey` will encrypt a session key randomly generated used for asymmetric encryption with Xenissuing.
 - `encrypt` would be used when setting sensitive data.
-- `decrypt` would be used whenever receiving sensitive data from Xenissuing.
+- `decryptCardData` would be used whenever receiving sensitive card data from Xenissuing.
 
 ### Usage
-```node
-import forge from 'node-forge';
-import XenIssuing from '@xendit/xenissuing-web';
 
-const keys = forge.pki.rsa.generateKeyPair(2048); // Use Xendit's Public Key instead
-const xen = new XenIssuing(
-    forge.pki.publicKeyToPem(keys.publicKey),
-);
-const sessionKey = xen.generateSessionKey();
-const iv = xen.generateIV();
-const sessionId = xen.generateSessionId(sessionKey);
-const encryptedPlain = xen.encrypt('plainText', sessionKey, iv);
-const decryptedPlain = forge.util.decode64(xen.decrypt(forge.util.encode64(iv), encryptedPlain, sessionKey));
+```node
+import XenIssuing from "@xendit/xenissuing-web";
+
+const pubkey = "-----BEGIN PUBLIC KEY-----${key}-----END PUBLIC KEY-----`";
+
+const secureSession = XenIssuing.createSecureSession(pubkey); // add sessionKey as parameter to test
+const sessionId = secureSession.getKey(); // to be used for API calls(eg. get card pan,cvv,etc)
+
+const { secret, iv } = apiResponse.data;
+const decryptedData = secureSession.decryptCardData(iv, secret);
 ```
