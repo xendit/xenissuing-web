@@ -107,7 +107,7 @@ console.log({ iv: ivBase64, pin: encPIN })
 
 
 const config = {
-  method: 'post',
+  method: 'put',
   url: `https://base-url/pin?session_id=${sessionId}`,
   data: {
     pin: encPIN,
