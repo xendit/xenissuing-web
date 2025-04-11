@@ -39,57 +39,57 @@ const decryptedData = secureSession.decryptCardData(iv, secret)
 
 ### 2. Get Card PAN
 
-```
-import axios from 'axios';
+```node
+import axios from "axios"
 
-const secureSession = XenIssuing.createSecureSession(pubkey);
-const authHeader = 'auth';
-const sessionId = secureSession.getKey();
+const secureSession = XenIssuing.createSecureSession(pubkey)
+const authHeader = "auth"
+const sessionId = secureSession.getKey()
 
 const config = {
-  method: 'get',
+  method: "get",
   url: `https://base-url/pan?session_id=${sessionId}`,
   headers: {
     Authorization: authHeader,
   },
-};
+}
 
-const response = await axios.request(config);
+const response = await axios.request(config)
 
-const { iv, secret } = response.data;
-const pan = secureSession.decryptCardData(iv, secret);
+const { iv, secret } = response.data
+const pan = secureSession.decryptCardData(iv, secret)
 
-console.log('Decrypted PAN:', pan);
+console.log("Decrypted PAN:", pan)
 ```
 
 ### 3. Get Card CVV
 
-```
-import axios from 'axios';
+```node
+import axios from "axios"
 
-const secureSession = XenIssuing.createSecureSession(pubkey);
-const authHeader = 'auth';
-const sessionId = secureSession.getKey();
+const secureSession = XenIssuing.createSecureSession(pubkey)
+const authHeader = "auth"
+const sessionId = secureSession.getKey()
 
 const config = {
-  method: 'get',
+  method: "get",
   url: `https://base-url/cvv2?session_id=${sessionId}`,
   headers: {
     Authorization: authHeader,
   },
-};
+}
 
-const response = await axios.request(config);
+const response = await axios.request(config)
 
-const { iv, secret } = response.data;
-const cvv = secureSession.decryptCardData(iv, secret);
+const { iv, secret } = response.data
+const cvv = secureSession.decryptCardData(iv, secret)
 
-console.log('Decrypted CVV:', cvv);
+console.log("Decrypted CVV:", cvv)
 ```
 
 ### 4. Set Card PIN
 
-```
+```node
 import axios from 'axios';
 
 const secureSession = XenIssuing.createSecureSession(pubkey);
@@ -125,25 +125,25 @@ console.log('PIN set successfully:', response.data);
 
 ### 5. Get Card PIN
 
-```
-import axios from 'axios';
+```node
+import axios from "axios"
 
-const secureSession = XenIssuing.createSecureSession(pubkey);
-const authHeader = 'auth';
-const sessionId = secureSession.getKey();
+const secureSession = XenIssuing.createSecureSession(pubkey)
+const authHeader = "auth"
+const sessionId = secureSession.getKey()
 
 const config = {
-  method: 'get',
+  method: "get",
   url: `https://base-url/pin?session_id=${sessionId}`,
   headers: {
     Authorization: authHeader,
   },
-};
+}
 
-const response = await axios.request(config);
+const response = await axios.request(config)
 
-const { iv, secret } = response.data;
-const pin = secureSession.decryptCardData(iv, secret);
+const { iv, secret } = response.data
+const pin = secureSession.decryptCardData(iv, secret)
 
-console.log('Decrypted PIN:', pin);
+console.log("Decrypted PIN:", pin)
 ```
