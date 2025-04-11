@@ -1,19 +1,19 @@
 ![NodeJs Support](https://img.shields.io/badge/nodejs-%3E=8.17.0-green)
 ![NPM Support](https://img.shields.io/badge/npm-%3E=6.14.15-green)
 
-# XenIssuing
+# Xenissuing
 
 This SDK comprises the following module:
 
-- **XenIssuing**: Handles encryption between XenIssuing and your web application.
+- **Xenissuing**: Handles encryption between XenIssuing and your web application.
 
 ## SecureSession
 
-`SecureSession` is a module that helps you set up encryption between XenIssuing and your application.
+SecureSession is a module to help you set up encryption between XenIssuing and your application.
 
 ### Requirements
 
-To use XenIssuing, you need a **public key** provided by Xendit (usually extracted from your private key).
+To use XenIssuing, you need a **public key** provided by Xendit.
 
 It includes several methods:
 
@@ -48,7 +48,7 @@ const sessionId = secureSession.getKey();
 
 const config = {
   method: 'get',
-  url: `https://your-url/pan?session_id=${sessionId}`,
+  url: `https://base-url/pan?session_id=${sessionId}`,
   headers: {
     Authorization: authHeader,
   },
@@ -73,7 +73,7 @@ const sessionId = secureSession.getKey();
 
 const config = {
   method: 'get',
-  url: `https://your-url/cvv2?session_id=${sessionId}`,
+  url: `https://base-url/cvv2?session_id=${sessionId}`,
   headers: {
     Authorization: authHeader,
   },
@@ -108,7 +108,7 @@ console.log({ iv: ivBase64, pin: encPIN })
 
 const config = {
   method: 'post',
-  url: `https://your-url/pin?session_id=${sessionId}`,
+  url: `https://base-url/pin?session_id=${sessionId}`,
   data: {
     pin: encPIN,
     iv: ivBase64
@@ -134,7 +134,7 @@ const sessionId = secureSession.getKey();
 
 const config = {
   method: 'get',
-  url: `https://your-url/pin?session_id=${sessionId}`,
+  url: `https://base-url/pin?session_id=${sessionId}`,
   headers: {
     Authorization: authHeader,
   },
